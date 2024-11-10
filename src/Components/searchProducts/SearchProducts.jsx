@@ -158,16 +158,16 @@ const SearchProducts = () => {
   };
 
   return (
-    <div className="d-flex justify-content-center flex-column">
-      <h2 className="d-flex justify-content-center">Menú de búsqueda</h2>
+    <div className="d-flex justify-content-center flex-column align-items-center">
+      <h2 className="d-flex justify-content-center mt-5 mb-3 text-info">Menú de búsqueda</h2>
       <br />
       {notification && (  
-        <div className={`alert alert-${notification.type} mt-3 d-flex justify-content-center`} role="alert">  
+        <div className={`alert alert-${notification.type} mt-3 d-flex justify-content-center w-50`} role="alert">  
           {notification.message}  
         </div>  
       )}
-      <div className="d-flex justify-content-center flex-column">
-        <Card className="d-flex justify-content-center">
+      <div className="d-flex justify-content-center flex-column w-25">
+        <Card className="d-flex justify-content-center mb-3 bg-black text-white">
           <CardBody>
             <Form onSubmit={submitSearchNameHandler}>
               <FormGroup>
@@ -180,14 +180,14 @@ const SearchProducts = () => {
                   onChange={productNameHandler}
                 />
               </FormGroup>
-              <Button type="submit" variant="primary">
+              <Button className="btn-info mt-3" type="submit" variant="primary">
                 Buscar
               </Button>
             </Form>
           </CardBody>
         </Card>
         <br />
-        <Card>
+        <Card className="mb-3 bg-black text-white">
           <CardBody>
             <Form onSubmit={submitSearchCodeHandler}>
               <FormGroup>
@@ -200,7 +200,7 @@ const SearchProducts = () => {
                   onChange={productCodeHandler}
                 />
               </FormGroup>
-              <Button type="submit" variant="primary">
+              <Button className="btn-info mt-3" type="submit" variant="primary">
                 Buscar
               </Button>
             </Form>
@@ -210,7 +210,7 @@ const SearchProducts = () => {
 
       {productSearched && (
         <div>
-          <Card style={{ width: "18rem" }} key={productSearched.id}>
+          <Card style={{ width: "18rem" }} key={productSearched.id} className="bg-dark text-white">
             <Card.Img
               variant="top"
               src={productSearched.productImage}
@@ -221,7 +221,7 @@ const SearchProducts = () => {
               <Card.Text>Código: {productSearched.code}</Card.Text>
             </Card.Body>
             {isAuthorized() && <CardFooter className="d-flex flex-row justify-content-between">
-              <Button onClick={clickUpdateHandler} className="m-1">
+              <Button onClick={clickUpdateHandler} className="m-1 btn-info text-dark">
                 Actualizar información
               </Button>
               <Button

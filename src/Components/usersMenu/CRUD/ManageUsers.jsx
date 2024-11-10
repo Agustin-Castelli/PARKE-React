@@ -90,20 +90,20 @@ const ManageUsers = () => {
 
   const usersMapped = usersList.map((user) => (  
     <div className="m-3" key={user.id}>  
-      <Card>  
+      <Card className="bg-dark text-white">  
         <CardBody className="d-flex flex-column">  
           <h5>{user.username}</h5>  
           <p>Password: {user.password}</p>  
           <p>Rol: {user.rol}</p>  
         </CardBody>  
         <CardFooter className="d-flex justify-content-between">  
-          <Button onClick={() => {  
+          <Button className="me-2 btn-info" onClick={() => {  
             setUserIdToUpdate(user.id);  
             setUpdatedUsername(user.username);  
             setUpdatedPassword(user.password);  
             setUpdatedRole(user.rol);
           }}>Actualizar</Button>  
-          <Button onClick={() => deleteUserHandler(user.id)} className="bg-danger border-danger">Eliminar</Button>  
+          <Button onClick={() => deleteUserHandler(user.id)} className="bg-danger border-danger ms-2">Eliminar</Button>  
         </CardFooter>  
       </Card>  
     </div>  
@@ -111,7 +111,7 @@ const ManageUsers = () => {
 
   return(
     <>  
-      <h2>Gestión de Usuarios</h2>   
+      <h3>Lista de Usuarios</h3>   
       <div className="d-flex justify-content-center flex-column">  
         <div className="d-flex flex-wrap">{usersMapped}</div>  
       </div>  
@@ -121,7 +121,7 @@ const ManageUsers = () => {
         </div>  
       )}
       {userIdToUpdate && (  
-        <Card>  
+        <Card className="bg-dark text-white">  
           <Card.Body>  
             <h5>Actualizar usuario</h5>  
             <Form onSubmit={submitUpdateForm}>  
@@ -152,11 +152,11 @@ const ManageUsers = () => {
                   placeholder="Rol actual"  
                 />  
               </FormGroup> 
-              <Button type="submit" variant="success">Actualizar Usuario</Button>  
+              <Button className="btn-info mt-3" type="submit" variant="success">Actualizar Usuario</Button>  
             </Form>  
           </Card.Body>  
         </Card>  
-      )};
+      )}
     </>
   );
 };

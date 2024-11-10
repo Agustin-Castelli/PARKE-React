@@ -71,7 +71,7 @@ const CreateUser = () => {
 
     return(
         <>
-      <h2 className="d-flex justify-content-center text-info">
+      <h2 className="d-flex justify-content-center">
         Sección de agregado de usuarios
       </h2>
       {notification && (  
@@ -79,7 +79,7 @@ const CreateUser = () => {
           {notification.message}  
         </div>  
       )}
-      <Card className="m-4 p-3 w-50" bg="secondary">
+      <Card className="m-4 p-3 w-50" bg="dark">
         <CardBody>
           <Form className="text-white" onSubmit={submitUserHandler}>
             <Form.Group className="mb-3" controlId="username">
@@ -115,7 +115,7 @@ const CreateUser = () => {
             <Button
               variant="primary"
               type="submit"
-              className="bg-primary border-black"
+              className="btn-info"
             >
               Crear usuario
             </Button>

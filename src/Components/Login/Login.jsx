@@ -117,7 +117,7 @@ const Login = ({onLogin}) => {
   }
 
   return (
-    <div className="d-flex justify-content-center flex-column">
+    <div className="d-flex justify-content-center align-items-center" style={{minHeight: "100vh"}}>
       <div className="text-center m-4">
         <img 
           src={logoparke}
@@ -128,7 +128,7 @@ const Login = ({onLogin}) => {
         />
       </div>
       <div className="text-center">
-        <div className="mt-3 d-flex justify-content-center">
+        <div className="mt-3">
           {loginWindow ? (
             ""
           ) : (
@@ -136,12 +136,11 @@ const Login = ({onLogin}) => {
             <Button className="mb-3" style={{padding: "10px 150px"}} onClick={clickLogin}>
               <h3>Ingresar</h3>
             </Button>
-            <p>Dont have an account? <a className="text-danger" href="">Sign up</a></p>  {/* ACA IRÍA LA FUNCION PARA REDIRIGIR AL FORM DE REGISTRO DE USUARIO */}
             </div>
           )}
         </div>
         {loginWindow ? (
-          <Card className="shadow bg-light m-5 d-flex align-items-center w-50">
+          <Card className="shadow m-5 p-2 d-flex align-items-center w-75 bg-dark text-white">
             <Card.Body>
               <Row className="mb-3">
                 <h4>Bienvenido a</h4>
@@ -152,7 +151,6 @@ const Login = ({onLogin}) => {
                   <Form.Control
                     className={errors.username && "border border-danger"}
                     type="text"
-                    // required
                     ref={usernameRef}
                     placeholder="Ingresar nombre de usuario"
                     onChange={usernameHandler}
@@ -164,7 +162,6 @@ const Login = ({onLogin}) => {
                     className={errors.password && "border border-danger"}
                     type="password"
                     ref={passwordRef}
-                    // required
                     placeholder="Ingresar contraseña"
                     onChange={passwordHandler}
                     value={enteredPassword}
@@ -181,7 +178,7 @@ const Login = ({onLogin}) => {
                 <Row>
                   <Col />
                   <Col md={6} className="d-flex justify-content-end">
-                    <Button variant="secondary" type="submit">
+                    <Button variant="info" type="submit" className="text-white">
                       Iniciar sesión
                     </Button>
                   </Col>

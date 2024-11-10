@@ -46,17 +46,17 @@ const NavBar = ({isLoggedIn, setIsLoggedIn, children}) => {
     return(
         <>
             <nav className="navba r navbar-expand-lg navbar-light custom-navbar">
-                <div className="d-flex justify-content-between bg-primary w-100">   
+                <div className="d-flex justify-content-between bg-dark w-100">   
                     <div className="d-flex"> 
-                        <img src={logoparke} width={60} height={60} className=""/>
-                        <Button onClick={dashboardHandler}>Inicio</Button>  
-                        <Button onClick={contactHandler}>Contacto</Button>
-                        <Button onClick={searchProductsHandler}>Buscar piezas</Button>
-                        {isAuthorized() && <Button onClick={addProductsHandler}>Agregar piezas</Button>}
+                        <img src={logoparke} width={60} height={60} className="bg-info"/>
+                        <Button className="btn-dark" onClick={dashboardHandler}>Inicio</Button>  
+                        <Button className="btn-dark" onClick={contactHandler}>Contacto</Button>
+                        <Button className="btn-dark" onClick={searchProductsHandler}>Buscar piezas</Button>
+                        {isAuthorized() && <Button className="btn-dark" onClick={addProductsHandler}>Agregar piezas</Button>}
                     </div>
-                    <div className="d-flex justify-content-end bg-primary w-100">
-                    {isSysAdmin() && <Button onClick={userMenuHandler}>Usuarios</Button>}
-                    <Button onClick={logOutHandler}>Cerrar sesión</Button>
+                    <div className="d-flex justify-content-end bg-dark w-100">
+                    {isSysAdmin() && <Button className="btn-dark" onClick={userMenuHandler}>Usuarios</Button>}
+                    <Button className="btn-dark" onClick={logOutHandler}>Cerrar sesión</Button>
                     </div>
                 </div>  
             </nav>

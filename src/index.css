@@ -53,6 +53,15 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.btn-hover {
+  transition: background-color 0.3s, border-color 0.3s; /* Animación suave */
+}
+
+.btn-hover:hover {
+  background-color: #343a40; /* Un tono más claro de oscuro */
+  border-color: #495057; /* Un tono más claro de la frontera */
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

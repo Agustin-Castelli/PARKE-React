@@ -5,15 +5,14 @@ const ProductItem = ({name, code, img }) => {
 
     return(
         <>
-            <Card style={{ width: "13rem", height: "20rem" }}>
+            <Card className="bg-dark text-white" style={{ width: "13rem", height: "20rem" }}>
             <Card.Img
               variant="top"
               src={img}
               alt="Imagen del producto"
               height={175}
             />
-            <hr></hr>
-            <Card.Body className="py-1 mx-1">
+            <Card.Body className="py-1 my-3">
               <Card.Title className="mb-4">{name}</Card.Title>
               <Card.Text>Código: {code}</Card.Text>
             </Card.Body>

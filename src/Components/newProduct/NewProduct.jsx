@@ -62,8 +62,8 @@ const NewProduct = () => {
   };
 
   return (
-    <>
-      <h2 className="d-flex justify-content-center text-info">
+    <div className="d-flex justify-content-center flex-column align-items-center">
+      <h2 className="text-info mt-5 mb-3">
         Sección de agregado de piezas
       </h2>
       {notification && (  
@@ -71,7 +71,7 @@ const NewProduct = () => {
           {notification.message}  
         </div>  
       )}
-      <Card className="m-4 p-3 w-50" bg="secondary">
+      <Card className="m-4 p-3 w-50 bg-black" bg="secondary">
         <CardBody>
           <Form className="text-white" onSubmit={submitProductHandler}>
             <Form.Group className="mb-3" controlId="ProductName">
@@ -107,14 +107,14 @@ const NewProduct = () => {
             <Button
               variant="primary"
               type="submit"
-              className="bg-primary border-black"
+              className="btn-info"
             >
               Agregar producto
             </Button>
           </Form>
         </CardBody>
       </Card>
-    </>
+    </div>
   );
 };
 
