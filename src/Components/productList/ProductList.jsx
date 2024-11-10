@@ -1,7 +1,7 @@
 import ProductItem from "../productItem/ProductItem";
 import PropTypes from "prop-types";
 import { useState, useEffect, useContext } from "react";
-import { ProductContext } from "../services/authentication/ProductContext";
+import { ProductContext } from "../services/ProductContext";
 
 const ProductList = () => {
   const [productsList, setProductsList] = useState([]);

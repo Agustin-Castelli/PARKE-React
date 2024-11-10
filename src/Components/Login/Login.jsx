@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import logoparke from "../../img/logo-parke.png" 
 import { AuthenticationContext } from "../services/authentication/authentication.Context";
+import { jwtDecode } from "jwt-decode";
 
 const Login = ({onLogin}) => {
   const [loginWindow, setLoginWindow] = useState(false);
@@ -56,8 +57,7 @@ const Login = ({onLogin}) => {
 
     const isSuccess = await handleLogin(enteredUsername, enteredPassword);
 
-    if (isSuccess) {  
-      handleUsernameLogin(enteredUsername); // Guardo el nombre de usuario en el contexto  
+    if (isSuccess) {   
       onLogin(); // Notifico que el usuario ha iniciado sesión  
       navigate("/home"); // Navega a la página principal
       console.log(localStorage.getItem("user-token"));
@@ -89,6 +89,7 @@ const Login = ({onLogin}) => {
       const data = await res.text();
 
       localStorage.setItem("user-token", data);
+      decodeTokenAndSetRole(data)
       setErrors({
         username: false,  
         password: false
@@ -102,6 +103,18 @@ const Login = ({onLogin}) => {
       return false;
     }
   };
+
+  const decodeTokenAndSetRole = (token) => {
+    try {
+      const decoded = jwtDecode(token);
+      const role = decoded.role;
+
+      handleUsernameLogin(enteredUsername, role); // Guardo el nombre de usuario y el rol en el contexto 
+    }
+    catch (error) {
+      console.error("Error decoding token:", error);
+    }
+  }
 
   return (
     <div className="d-flex justify-content-center flex-column">

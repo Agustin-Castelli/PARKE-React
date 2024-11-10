@@ -1,48 +1,36 @@
 import Login from "./Components/Login/Login";
 import Dashboard from "./Components/Dashboard/Dashboard";
+import UserMenu from "./Components/usersMenu/UsersMenu";
 import PageNotFound from "./Components/pageNotFound/PageNotFound";
-
-import { useState } from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Protected from "./Components/protected/Protected";
+import Unauthorized from "./Components/unauthorized/Unauthorized";
 import ProductDetails from "./Components/productDetails/ProductDetails";
 import NavBar from "./Components/navBar/NavBar";
 import Contact from "./Components/contact/Contact";
 import NewProduct from "./Components/newProduct/NewProduct";
 import SearchProducts from "./Components/searchProducts/SearchProducts";
 
-function App() {
-  // const demoProducts = [
-  //   {
-  //     id: 1,
-  //     name: "prod1",
-  //     code: "code1",
-  //     img: "url-img",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "prod2",
-  //     code: "code2",
-  //     img: "url-img",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "prod3",
-  //     code: "code3",
-  //     img: "url-img",
-  //   },
-  // ];
+import { useContext, useState } from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Protected from "./Components/protected/Protected";
+import { AuthenticationContext } from "./Components/services/authentication/authentication.Context";
+import { Navigate } from "react-router-dom";
 
-  // useEffect(() => {
-  //   const productsStored = JSON.parse(localStorage.getItem("products"));
-  //   if (productsStored) setProductsList(productsStored);
-  // }, []);
+function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { role } = useContext(AuthenticationContext);
 
   const loginHandler = () => {
     setIsLoggedIn(!isLoggedIn);
   };
+
+  const isAuthorized = () => {
+    return role === 'admin' || role === 'sysAdmin';
+  }
+
+  const isSysAdmin = () => {
+    return role === 'sysAdmin';
+  }
 
   const router = createBrowserRouter([
     {
@@ -75,20 +63,32 @@ function App() {
         },
         {
           path: "home/addProducts",
-          element: (
+          element: isAuthorized()? (
             <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}>
               <NewProduct/>
             </NavBar>
+          ) : (
+            <Navigate to="/unauthorized" replace />
           ),
         },
         {
           path: "home/searchProducts",
           element: (
             <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}>
-              <SearchProducts />
+              <SearchProducts/>
             </NavBar>
           ),
         },
+        {
+          path: "home/userMenu",
+          element: isSysAdmin()? (
+            <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}>
+              <UserMenu/>
+            </NavBar>
+          ) : (
+            <Navigate to="/unauthorized" replace />
+          )
+        }
       ],
     },
     {
@@ -99,28 +99,13 @@ function App() {
       path: "*",
       element: <PageNotFound />,
     },
+    {
+      path: "/unauthorized",
+      element: <Unauthorized/>
+    }
   ]);
 
   return <>{<RouterProvider router={router} />}</>;
 }
 
 export default App;
-
-// const router = createBrowserRouter([
-//   {
-//     path: "/",
-//     element: (
-//       <Protected isSignedIn={isLoggedIn}>
-//         <Dashboard isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
-//       </Protected>
-//     ),
-//   },
-//   {
-//     path: "/login",
-//     element: <Login onLogin={loginHandler} />,
-//   },
-//   {
-//     path: "product/:id",
-//     element: <ProductDetails/>
-//   }
-// ]);

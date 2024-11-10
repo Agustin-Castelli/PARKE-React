@@ -16,15 +16,19 @@ const NavBar = ({isLoggedIn, setIsLoggedIn, children}) => {
     }
 
      const contactHandler = () => {
-         navigate("/home/contact")
+         navigate("/home/contact");
      }
 
      const addProductsHandler = () => {
-        navigate("/home/addProducts")
+        navigate("/home/addProducts");
      };
 
      const searchProductsHandler = () => {
-        navigate("/home/searchProducts")
+        navigate("/home/searchProducts");
+     }
+
+     const userMenuHandler = () => {
+        navigate("/home/userMenu");
      }
 
     return(
@@ -37,8 +41,11 @@ const NavBar = ({isLoggedIn, setIsLoggedIn, children}) => {
                         <Button onClick={contactHandler}>Contacto</Button>
                         <Button onClick={searchProductsHandler}>Buscar piezas</Button>
                         <Button onClick={addProductsHandler}>Agregar piezas</Button>
-                    </div> 
+                    </div>
+                    <div className="d-flex justify-content-end bg-primary w-100">
+                    <Button onClick={userMenuHandler}>Usuarios</Button>
                     <Button onClick={logOutHandler}>Cerrar sesión</Button>
+                    </div>
                 </div>  
             </nav>
             {children}
