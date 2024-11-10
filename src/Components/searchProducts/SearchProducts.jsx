@@ -1,14 +1,9 @@
-import {
-  Card,
-  Button,
-  CardBody,
-  Form,
-  FormGroup,
-  FormLabel,
-  CardFooter,
-} from "react-bootstrap";
-import { useContext, useState, useEffect } from "react";
+import { Card, Button, CardBody, Form, FormGroup, FormLabel, CardFooter } from "react-bootstrap";
+import { useContext, useState} from "react";
+import useNotifications from "../custom-hooks/useNotifications";
 import { ProductContext } from "../services/ProductContext";
+import { AuthenticationContext } from "../services/authentication/authentication.Context";
+
 
 const SearchProducts = () => {
   const [productName, setProductName] = useState("");
@@ -18,9 +13,13 @@ const SearchProducts = () => {
   const [updatedImage, setUpdatedImage] = useState("");
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [productSearched, setProductSearched] = useState(null);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
+  const { notification, showNotification } = useNotifications();
   const { toggleChange } = useContext(ProductContext);
+  const { role } = useContext(AuthenticationContext);
+
+  const isAuthorized = () => {
+    return role === 'admin' || role === 'sysAdmin';
+  }
 
   const productNameHandler = (event) => {
     setProductName(event.target.value);
@@ -60,12 +59,12 @@ const SearchProducts = () => {
         if (product) {
           setProductSearched(product);
         } else {
-          setErrorMsg("No se encontraron productos con ese nombre.");
+          showNotification("No se encontraron productos con ese nombre.", "danger");
         }
       })
       .catch((error) => {
         console.error(error);
-        setErrorMsg("Producto no encontrado.");
+        showNotification("Producto no encontrado.", "danger");
       });
   };
 
@@ -87,18 +86,18 @@ const SearchProducts = () => {
         if (product) {
           setProductSearched(product);
         } else {
-          setErrorMsg("No se encontraron productos con ese código.");
+          showNotification("No se encontraron productos con ese código.", "danger")
         }
       })
       .catch((error) => {
         console.error(error);
-        setErrorMsg("Producto no encontrado.");
+        showNotification("Producto no encontrado.", "danger")
       });
   };
 
   const deleteProductHandler = (id) => {
     if (!id) {
-      setErrorMsg("No se puede eliminar el producto. ID no válido.");
+      showNotification("No se puede eliminar el producto. ID no válido.", "danger")
       return;
     }
     fetch(`https://localhost:7016/api/Product/Delete/${id}`, {
@@ -110,39 +109,18 @@ const SearchProducts = () => {
     })
       .then(() => {
         toggleChange();
-        setSuccessMsg(`Producto ${id} eliminado satisfactoriamente.`);
+        showNotification(`Producto ${id} eliminado satisfactoriamente.`, "success")
         setProductSearched(null); // Limpiar el producto buscado
       })
       .catch((error) => {
         console.error(error);
-        setErrorMsg("No se pudo eliminar el producto.");
+        showNotification("No se pudo eliminar el producto.", "danger")
       });
   };
 
-  // Reseteo de mensajes después de 3 segundos
-  useEffect(() => {
-    if (successMsg) {
-      const timer = setTimeout(() => {
-        setSuccessMsg("");
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [successMsg]);
-
-  useEffect(() => {
-    if (errorMsg) {
-      const timer = setTimeout(() => {
-        setErrorMsg("");
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [errorMsg]);
-
   const updateProductHandler = (id, updatedProduct) => {
     if (!id) {
-      setErrorMsg(
-        "No se pudo actualizar la información del producto, ID no válido."
-      );
+      showNotification("No se pudo actualizar la información del producto, ID no válido.", "danger");
       return;
     }
     fetch(`https://localhost:7016/api/Product/Update/${id}`, {
@@ -155,12 +133,12 @@ const SearchProducts = () => {
     })
       .then(() => {
         toggleChange();
-        setSuccessMsg(`Producto ${id} actualizado satisfactoriamente.`);
+        showNotification(`Producto ${id} actualizado satisfactoriamente.`, "success");
         setProductSearched(null);
       })
       .catch((error) => {
         console.log(error);
-        setErrorMsg("No se pudo actualizar el producto.");
+        showNotification("No se pudo actualizar el producto.", "danger");
       });
   };
 
@@ -180,14 +158,16 @@ const SearchProducts = () => {
   };
 
   return (
-    <>
-      <h2>Menú de búsqueda</h2>
+    <div className="d-flex justify-content-center flex-column">
+      <h2 className="d-flex justify-content-center">Menú de búsqueda</h2>
       <br />
-      {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
-      {successMsg && <div className="alert alert-success">{successMsg}</div>}
-
-      <div>
-        <Card>
+      {notification && (  
+        <div className={`alert alert-${notification.type} mt-3 d-flex justify-content-center`} role="alert">  
+          {notification.message}  
+        </div>  
+      )}
+      <div className="d-flex justify-content-center flex-column">
+        <Card className="d-flex justify-content-center">
           <CardBody>
             <Form onSubmit={submitSearchNameHandler}>
               <FormGroup>
@@ -240,7 +220,7 @@ const SearchProducts = () => {
               <Card.Title>{productSearched.productName}</Card.Title>
               <Card.Text>Código: {productSearched.code}</Card.Text>
             </Card.Body>
-            <CardFooter className="d-flex flex-row justify-content-between">
+            {isAuthorized() && <CardFooter className="d-flex flex-row justify-content-between">
               <Button onClick={clickUpdateHandler} className="m-1">
                 Actualizar información
               </Button>
@@ -250,7 +230,7 @@ const SearchProducts = () => {
               >
                 Eliminar producto
               </Button>
-            </CardFooter>
+            </CardFooter>}
           </Card>
         </div>
       )}
@@ -293,7 +273,7 @@ const SearchProducts = () => {
           </Card.Body>
         </Card>
       )}
-    </>
+    </div>
   );
 };
 

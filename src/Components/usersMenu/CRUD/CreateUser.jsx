@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { UserContext } from "../../services/UserContext";
 import { useContext } from "react";
+import useNotifications from "../../custom-hooks/useNotifications";
 import { Form, Card, CardBody, Button } from "react-bootstrap";
-
 
 
 const CreateUser = () => {
@@ -10,8 +10,7 @@ const CreateUser = () => {
     const [enteredUsername, setEnteredUsername] = useState("");
     const [enteredPassword, setEnteredPassword] = useState("");
     const [enteredRole, setEnteredRole] = useState("");
-    const [errorMsg, setErrorMsg] = useState("");
-    const [successMsg, setSuccessMsg] = useState("");
+    const { notification, showNotification } = useNotifications();  
 
     const { toggleChange } = useContext(UserContext);
 
@@ -33,7 +32,7 @@ const CreateUser = () => {
         const roleNumber = Number(enteredRole);
 
         if (![0, 1, 2].includes(roleNumber)) {  
-          setErrorMsg("Rol inválido. Debe ser 0, 1 o 2.");  
+          showNotification("Rol inválido. Debe ser 0, 1 o 2.", "danger") 
           return;  
         }
         const newUser = {
@@ -42,7 +41,7 @@ const CreateUser = () => {
             rol: roleNumber
         }
 
-        saveUserDataHandler(newUser)
+        saveUserDataHandler(newUser);
     }
 
     const saveUserDataHandler = (newUserData) => {
@@ -59,44 +58,27 @@ const CreateUser = () => {
               else throw new Error("The response has some errors");
             })
             .then(() => {
-              setSuccessMsg(`Usuario ${enteredUsername} creado exitosamente.`);
+              showNotification(`Usuario ${enteredUsername} creado exitosamente.`, "success");
               toggleChange();
               setEnteredUsername("");
               setEnteredPassword("");
               setEnteredRole("");
-              setErrorMsg("");
             })
-            .catch((error) => {
-              setErrorMsg(error.message || "Hubo un problema al crear al usuario.");
+            .catch(() => {
+              showNotification("Hubo un problema al crear al usuario.", "danger");
             });
     };
-
-    useEffect(() => {
-        if (successMsg) {
-          const timer = setTimeout(() => {
-            setSuccessMsg("");
-          }, 3000);
-          return () => clearTimeout(timer);
-        }
-      }, [successMsg]);
-    
-      // Reseteo de mensajes de error después de 3 segundos
-      useEffect(() => {
-        if (errorMsg) {
-          const timer = setTimeout(() => {
-            setErrorMsg("");
-          }, 3000);
-          return () => clearTimeout(timer);
-        }
-      }, [errorMsg]);
 
     return(
         <>
       <h2 className="d-flex justify-content-center text-info">
         Sección de agregado de usuarios
       </h2>
-      {successMsg && <div className="alert alert-success">{successMsg}</div>}
-      {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
+      {notification && (  
+        <div className={`alert alert-${notification.type} mt-3`} role="alert">  
+          {notification.message}  
+        </div>  
+      )}
       <Card className="m-4 p-3 w-50" bg="secondary">
         <CardBody>
           <Form className="text-white" onSubmit={submitUserHandler}>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";  
 import { UserContext } from "../../services/UserContext";  
 import { Card, CardBody, Button, Form, FormGroup, FormLabel, CardFooter } from "react-bootstrap";  
+import useNotifications from "../../custom-hooks/useNotifications";
 
 const ManageUsers = () => {  
   const [usersList, setUsersList] = useState([]);   
@@ -8,8 +9,7 @@ const ManageUsers = () => {
   const [updatedUsername, setUpdatedUsername] = useState("");  
   const [updatedPassword, setUpdatedPassword] = useState("");
   const [updatedRole, setUpdatedRole] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
+  const { notification, showNotification } = useNotifications();  
   const { isChanged, toggleChange } = useContext(UserContext);  
 
   useEffect(() => {  
@@ -29,7 +29,7 @@ const ManageUsers = () => {
 
   const deleteUserHandler = (id) => {  
     if (!id) {
-      setErrorMsg("No se puedo actualizar los valores del usuario. ID no válido.");
+      showNotification("No se puedo actualizar los valores del usuario. ID no válido.", "danger");
       return;
     }; 
     fetch(`https://localhost:7016/api/User/Delete/${id}`, {  
@@ -41,17 +41,17 @@ const ManageUsers = () => {
     })  
       .then(() => {  
         toggleChange(); 
-        setSuccessMsg(`Usuario ${id} eliminado satisfactoriamente.`); 
+        showNotification(`Usuario ${id} eliminado satisfactoriamente.`, "success");
       })  
       .catch((error) => {
         console.log(error)
-        setErrorMsg("No se pudo eliminar al usuario.");
+        showNotification("No se pudo eliminar al usuario.", "danger");
       });  
   };  
 
   const updateUserHandler = (id, updatedUser) => {  
     if (!id) {
-      setErrorMsg("No se puedo actualizar los valores del usuario. ID no válido.");
+      showNotification("No se puedo actualizar los valores del usuario. ID no válido.", "danger");
       return;
     }  
 
@@ -64,8 +64,8 @@ const ManageUsers = () => {
       body: JSON.stringify(updatedUser),  
     })  
       .then(() => {  
-        toggleChange();   
-        setSuccessMsg(`Usuario ${id} actualizado exitosamente.`);
+        toggleChange();
+        showNotification(`Usuario ${id} actualizado exitosamente.`, "success"); 
         console.log(userIdToUpdate);
         setUserIdToUpdate(null);
         setUpdatedUsername("");
@@ -74,28 +74,9 @@ const ManageUsers = () => {
       })  
       .catch((error) => {
         console.log(error)
-        setErrorMsg("No se pudo actualizar el producto.");
+        showNotification("No se pudo actualizar al usuario.", "danger");
       });  
-  };  
-
-  // Reseteo de mensajes después de 3 segundos
-  useEffect(() => {
-    if (successMsg) {
-      const timer = setTimeout(() => {
-        setSuccessMsg("");
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [successMsg]);
-
-  useEffect(() => {
-    if (errorMsg) {
-      const timer = setTimeout(() => {
-        setErrorMsg("");
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [errorMsg]);
+  };
 
   const submitUpdateForm = (event) => {  
     event.preventDefault();  
@@ -105,7 +86,7 @@ const ManageUsers = () => {
       rol: updatedRole, 
     };  
     updateUserHandler(userIdToUpdate, updatedUser);
-  };  
+  };
 
   const usersMapped = usersList.map((user) => (  
     <div className="m-3" key={user.id}>  
@@ -130,54 +111,53 @@ const ManageUsers = () => {
 
   return(
     <>  
-    <h2>Gestión de Usuarios</h2>   
-    
-
-    <div className="d-flex justify-content-center flex-column">  
-      <div className="d-flex flex-wrap">{usersMapped}</div>  
-    </div>  
-    
-    {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
-    {successMsg && <div className="alert alert-success">{successMsg}</div>}
-
-    {userIdToUpdate && (  
-      <Card>  
-        <Card.Body>  
-          <h5>Actualizar usuario</h5>  
-          <Form onSubmit={submitUpdateForm}>  
-            <FormGroup>  
-              <FormLabel>Nombre de usuario</FormLabel>  
-              <Form.Control  
-                type="text"  
-                value={updatedUsername}  
-                onChange={(e) => setUpdatedUsername(e.target.value)}  
-                placeholder="Nombre actual"  
-              />  
-            </FormGroup>  
-            <FormGroup>  
-              <FormLabel>Contraseña</FormLabel>  
-              <Form.Control  
-                type="text"  
-                value={updatedPassword}  
-                onChange={(e) => setUpdatedPassword(e.target.value)}  
-                placeholder="Contraseña actual"  
-              />
-            </FormGroup> 
-            <FormGroup>  
-              <FormLabel>Rol del usuario</FormLabel>  
-              <Form.Control  
-                type="text"  
-                value={updatedRole}  
-                onChange={(e) => setUpdatedRole(e.target.value)}  
-                placeholder="Rol actual"  
-              />  
-            </FormGroup> 
-            <Button type="submit" variant="success">Actualizar Usuario</Button>  
-          </Form>  
-        </Card.Body>  
-      </Card>  
-    )};
-  </>
+      <h2>Gestión de Usuarios</h2>   
+      <div className="d-flex justify-content-center flex-column">  
+        <div className="d-flex flex-wrap">{usersMapped}</div>  
+      </div>  
+      {notification && (  
+        <div className={`alert alert-${notification.type} mt-3`} role="alert">  
+          {notification.message}  
+        </div>  
+      )}
+      {userIdToUpdate && (  
+        <Card>  
+          <Card.Body>  
+            <h5>Actualizar usuario</h5>  
+            <Form onSubmit={submitUpdateForm}>  
+              <FormGroup>  
+                <FormLabel>Nombre de usuario</FormLabel>  
+                <Form.Control  
+                  type="text"  
+                  value={updatedUsername}  
+                  onChange={(e) => setUpdatedUsername(e.target.value)}  
+                  placeholder="Nombre actual"  
+                />  
+              </FormGroup>  
+              <FormGroup>  
+                <FormLabel>Contraseña</FormLabel>  
+                <Form.Control  
+                  type="text"  
+                  value={updatedPassword}  
+                  onChange={(e) => setUpdatedPassword(e.target.value)}  
+                  placeholder="Contraseña actual"  
+                />
+              </FormGroup> 
+              <FormGroup>  
+                <FormLabel>Rol del usuario</FormLabel>  
+                <Form.Control  
+                  type="text"  
+                  value={updatedRole}  
+                  onChange={(e) => setUpdatedRole(e.target.value)}  
+                  placeholder="Rol actual"  
+                />  
+              </FormGroup> 
+              <Button type="submit" variant="success">Actualizar Usuario</Button>  
+            </Form>  
+          </Card.Body>  
+        </Card>  
+      )};
+    </>
   );
 };
 

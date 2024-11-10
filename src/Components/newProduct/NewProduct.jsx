@@ -1,6 +1,8 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { Button, Form, Card, CardBody } from "react-bootstrap";
 import { ProductContext } from "../services/ProductContext";
+import useNotifications from "../custom-hooks/useNotifications";
+
 import PropTypes from "prop-types";
 
 const NewProduct = () => {
@@ -8,8 +10,7 @@ const NewProduct = () => {
   const [code, setCode] = useState("");
   const [img, setImg] = useState("");
 
-  const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
+  const { notification, showNotification } = useNotifications();
 
   const { toggleChange } = useContext(ProductContext);
 
@@ -49,45 +50,27 @@ const NewProduct = () => {
         else throw new Error("The response has some errors");
       })
       .then(() => {
-        setSuccessMsg(`Producto ${name} creado exitosamente.`);
+        showNotification(`Producto ${name} creado exitosamente.`, 'success');
         toggleChange();
         setName("");
         setCode("");
         setImg("");
-        setErrorMsg("");
       })
-      .catch((error) => {
-        setErrorMsg(error.message || "Hubo un problema al crear el producto.");
+      .catch(() => {
+        showNotification('Hubo un problema al crear el producto.', 'danger');
       });
   };
-
-  // Reseteo de mensajes de éxito después de 3 segundos
-  useEffect(() => {
-    if (successMsg) {
-      const timer = setTimeout(() => {
-        setSuccessMsg("");
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [successMsg]);
-
-  // Reseteo de mensajes de error después de 3 segundos
-  useEffect(() => {
-    if (errorMsg) {
-      const timer = setTimeout(() => {
-        setErrorMsg("");
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [errorMsg]);
 
   return (
     <>
       <h2 className="d-flex justify-content-center text-info">
         Sección de agregado de piezas
       </h2>
-      {successMsg && <div className="alert alert-success">{successMsg}</div>}
-      {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
+      {notification && (  
+        <div className={`alert alert-${notification.type} mt-3`} role="alert">  
+          {notification.message}  
+        </div>  
+      )}
       <Card className="m-4 p-3 w-50" bg="secondary">
         <CardBody>
           <Form className="text-white" onSubmit={submitProductHandler}>

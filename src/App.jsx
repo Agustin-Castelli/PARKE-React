@@ -3,7 +3,6 @@ import Dashboard from "./Components/Dashboard/Dashboard";
 import UserMenu from "./Components/usersMenu/UsersMenu";
 import PageNotFound from "./Components/pageNotFound/PageNotFound";
 import Unauthorized from "./Components/unauthorized/Unauthorized";
-import ProductDetails from "./Components/productDetails/ProductDetails";
 import NavBar from "./Components/navBar/NavBar";
 import Contact from "./Components/contact/Contact";
 import NewProduct from "./Components/newProduct/NewProduct";
@@ -42,14 +41,6 @@ function App() {
           element: (
             <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}>
               <Dashboard/>
-            </NavBar>
-          ),
-        },
-        {
-          path: "/home/product/:id",
-          element: (
-            <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}>
-              <ProductDetails />
             </NavBar>
           ),
         },
